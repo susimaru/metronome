@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f4ed">
+  <title>硬筆書写 速書きトレーニング</title>
+  <style>
+    :root { color-scheme: light; --ink:#17211d; --paper:#f7f4ed; --accent:#0b6b47; --soft:#e7efe9; --line:#cbd7cf; --danger:#9d302c; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100svh; background:var(--paper); color:var(--ink); font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif; }
+    main { width:min(100%, 620px); margin:auto; padding:max(24px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom)); }
+    h1 { margin:10px 0 6px; font-size:clamp(1.5rem, 6vw, 2rem); letter-spacing:.05em; }
+    h2 { margin:0; font-size:1.3rem; }
+    p { line-height:1.65; }
+    .sub, .hint { color:#53645a; font-size:.92rem; }
+    .screen[hidden] { display:none; }
+    .choices { display:grid; gap:14px; margin-top:28px; }
+    button { appearance:none; border:0; border-radius:14px; padding:14px 18px; background:var(--ink); color:white; font:inherit; font-weight:700; cursor:pointer; min-height:52px; }
+    button:focus-visible, input:focus-visible { outline:3px solid #d79020; outline-offset:3px; }
+    button.secondary { background:var(--soft); color:var(--ink); }
+    button.stop { background:var(--danger); }
+    .mode-button { text-align:left; padding:20px; font-size:1.1rem; }
+    .mode-button small { display:block; margin-top:5px; font-size:.83rem; opacity:.76; font-weight:400; }
+    .topline { display:flex; gap:10px; align-items:center; }
+    .home { min-height:40px; padding:8px 12px; border-radius:10px; background:transparent; color:var(--accent); }
+    .panel { margin-top:22px; padding:20px; border:1px solid var(--line); border-radius:16px; background:#fffdf8; }
+    fieldset { border:0; padding:0; margin:0; }
+    legend { font-weight:700; margin-bottom:10px; }
+    label { display:block; font-weight:700; margin-top:14px; }
+    input[type="number"] { width:100%; margin-top:7px; padding:12px; border:1px solid var(--line); border-radius:10px; color:var(--ink); font:inherit; background:white; }
+    .radios { display:grid; gap:8px; }
+    .radios label, .check { margin:0; font-weight:400; display:flex; gap:9px; align-items:center; }
+    input[type="radio"], input[type="checkbox"] { width:20px; height:20px; accent-color:var(--accent); }
+    .calculation { margin:14px 0 0; padding:12px; border-radius:10px; background:var(--soft); font-weight:700; line-height:1.6; }
+    .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px; }
+    .actions .wide { grid-column:1 / -1; }
+    .status { text-align:center; min-height:1.6em; margin:28px 0 4px; color:var(--accent); font-weight:700; }
+    .timer { text-align:center; font:700 clamp(4.4rem, 22vw, 8.7rem)/1 ui-monospace,SFMono-Regular,Consolas,monospace; font-variant-numeric:tabular-nums; letter-spacing:-.07em; margin:12px 0 26px; }
+    .progress { height:10px; overflow:hidden; border-radius:999px; background:var(--soft); }
+    .progress > div { height:100%; width:0; background:var(--accent); transition:width .15s linear; }
+    .active-note { text-align:center; color:#53645a; min-height:1.5em; }
+    @media (max-width:380px) { main { padding-left:14px; padding-right:14px; } .panel { padding:16px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <section id="home-screen" class="screen">
+      <h1>硬筆書写 速書き</h1>
+      <p class="sub">音の合図で、4分間の速書きに必要なペースと体力を鍛えます。</p>
+      <div class="choices">
+        <button class="mode-button" type="button" data-open="metro-screen">メトロノームモード<small>一定の間隔で文字を書く練習</small></button>
+        <button class="mode-button" type="button" data-open="timer-screen">4分タイマーモード<small>本番を想定した4分間の練習</small></button>
+      </div>
+      <p class="hint">開始中は、対応するiPhoneのブラウザで画面スリープを防止します。</p>
+    </section>
+
+    <section id="metro-screen" class="screen" hidden>
+      <div class="topline"><button class="home" type="button" data-home>← ホーム</button><h2>メトロノーム</h2></div>
+      <div class="panel">
+        <fieldset>
+          <legend>文字の合図間隔</legend>
+          <div class="radios">
+            <label><input type="radio" name="pace" value="bpm" checked> BPMで設定する</label>
+            <label><input type="radio" name="pace" value="chars"> 4分間の文字数で設定する</label>
+          </div>
+        </fieldset>
+        <label for="bpm">BPM（1分あたりの合図）</label>
+        <input id="bpm" type="number" inputmode="numeric" min="20" max="240" value="60">
+        <label for="chars">4分間の目標文字数</label>
+        <input id="chars" type="number" inputmode="numeric" min="1" max="1440" value="120">
+        <p id="metro-calc" class="calculation" aria-live="polite"></p>
+        <div class="actions"><button id="metro-start" class="wide" type="button">開始</button><button id="metro-stop" class="stop" type="button" disabled>ストップ</button><button id="metro-reset" class="secondary" type="button">リセット</button></div>
+      </div>
+      <p id="metro-status" class="status" aria-live="polite">準備完了</p>
+      <div id="metro-time" class="timer">04:00</div>
+      <div class="progress" aria-label="4分間の進行状況"><div id="metro-progress"></div></div>
+      <p class="active-note">1音につき1文字を書く目安です</p>
+    </section>
+
+    <section id="timer-screen" class="screen" hidden>
+      <div class="topline"><button class="home" type="button" data-home>← ホーム</button><h2>4分タイマー</h2></div>
+      <div class="panel">
+        <label class="check" for="reading"><input id="reading" type="checkbox">開始前に黙読1分を入れる</label>
+        <p class="hint">黙読後、5秒のカウントダウン（ピッ×4、ピー）から4分を開始します。</p>
+        <div class="actions"><button id="timer-start" class="wide" type="button">開始</button><button id="timer-stop" class="stop" type="button" disabled>ストップ</button><button id="timer-reset" class="secondary" type="button">リセット</button></div>
+      </div>
+      <p id="timer-status" class="status" aria-live="polite">準備完了</p>
+      <div id="timer-time" class="timer">04:00</div>
+      <div class="progress" aria-label="4分間の進行状況"><div id="timer-progress"></div></div>
+      <p id="timer-note" class="active-note">4分間、集中して書き切りましょう</p>
+    </section>
+  </main>
+  <script>
+    const DURATION = 240;
+    let audioContext, wakeLock, active = null, rafId = 0, intervalId = 0, timeoutIds = [];
+    const $ = id => document.getElementById(id);
+    const screens = ['home-screen', 'metro-screen', 'timer-screen'];
+    const setScreen = id => screens.forEach(s => $(s).hidden = s !== id);
+    document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => setScreen(b.dataset.open));
+    document.querySelectorAll('[data-home]').forEach(b => b.onclick = () => { stop(); setScreen('home-screen'); });
+
+    function context() { if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); audioContext.resume(); return audioContext; }
+    function beep(long = false) { const ctx = context(), osc = ctx.createOscillator(), gain = ctx.createGain(), now = ctx.currentTime; osc.frequency.value = long ? 1047 : 880; gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(.16, now + .01); gain.gain.exponentialRampToValueAtTime(.0001, now + (long ? .45 : .12)); osc.connect(gain).connect(ctx.destination); osc.start(now); osc.stop(now + (long ? .47 : .14)); }
+    async function keepAwake() { if (!('wakeLock' in navigator) || wakeLock) return; try { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => wakeLock = null); } catch (_) {} }
+    async function releaseAwake() { if (wakeLock) { try { await wakeLock.release(); } catch (_) {} wakeLock = null; } }
+    function clearSchedules() { cancelAnimationFrame(rafId); clearInterval(intervalId); timeoutIds.forEach(clearTimeout); timeoutIds = []; }
+    function setTime(id, sec) { sec = Math.max(0, Math.ceil(sec)); $(id).textContent = `${String(Math.floor(sec / 60)).padStart(2,'0')}:${String(sec % 60).padStart(2,'0')}`; }
+    function buttons(mode, running) { $(`${mode}-start`).disabled = running; $(`${mode}-stop`).disabled = !running; }
+    function stop(message = '中断しました') { if (!active) return; clearSchedules(); buttons(active, false); $(`${active}-status`).textContent = message; active = null; releaseAwake(); }
+    function reset(mode) { stop(); setTime(`${mode}-time`, DURATION); $(`${mode}-progress`).style.width = '0%'; $(`${mode}-status`).textContent = '準備完了'; if (mode === 'timer') $('timer-note').textContent = '4分間、集中して書き切りましょう'; }
+    function runCountdown(mode, seconds, title, onFinish) { const started = performance.now(); $(`${mode}-status`).textContent = title; const draw = now => { if (active !== mode) return; const left = seconds - (now - started) / 1000; setTime(`${mode}-time`, left); if (left <= 0) return onFinish(); rafId = requestAnimationFrame(draw); }; rafId = requestAnimationFrame(draw); }
+    function runFourMinutes(mode, onTick) { const started = performance.now(); $(`${mode}-status`).textContent = '書写中'; const draw = now => { if (active !== mode) return; const elapsed = Math.min(DURATION, (now - started) / 1000); setTime(`${mode}-time`, DURATION - elapsed); $(`${mode}-progress`).style.width = `${elapsed / DURATION * 100}%`; if (onTick) onTick(elapsed); if (elapsed >= DURATION) { clearInterval(intervalId); buttons(mode, false); $(`${mode}-status`).textContent = '終了！ おつかれさまでした'; active = null; beep(true); releaseAwake(); return; } rafId = requestAnimationFrame(draw); }; rafId = requestAnimationFrame(draw); }
+    function updateCalc() { const byBpm = document.querySelector('input[name="pace"]:checked').value === 'bpm'; const bpm = Math.min(240, Math.max(20, Number($('bpm').value) || 60)); const chars = Math.min(1440, Math.max(1, Number($('chars').value) || 120)); const interval = byBpm ? 60 / bpm : DURATION / chars; $('metro-calc').textContent = byBpm ? `1文字 ${interval.toFixed(2)}秒ごと ／ 4分で約${Math.round(DURATION / interval)}文字` : `1文字 ${interval.toFixed(2)}秒ごと ／ 1分あたり${(60 / interval).toFixed(1)}文字`; return interval; }
+    function startMetro() { const interval = updateCalc(); active = 'metro'; buttons('metro', true); keepAwake(); beep(); let next = interval * 1000; const started = performance.now(); intervalId = setInterval(() => { const elapsed = performance.now() - started; if (elapsed + 60 >= next) { beep(); next += interval * 1000; } }, Math.min(100, interval * 1000 / 4)); runFourMinutes('metro'); }
+    function startTimer() { active = 'timer'; buttons('timer', true); keepAwake(); if (!$('reading').checked) { $('timer-note').textContent = '4分間、集中して書き切りましょう'; return runFourMinutes('timer'); } $('timer-note').textContent = '黙読中'; runCountdown('timer', 60, '黙読 1分', beginFive); }
+    function beginFive() { if (active !== 'timer') return; $('timer-note').textContent = 'まもなく開始'; let n = 0; const fire = () => { n++; beep(n === 5); if (n < 5) timeoutIds.push(setTimeout(fire, 1000)); else timeoutIds.push(setTimeout(() => { $('timer-note').textContent = '4分間、集中して書き切りましょう'; runFourMinutes('timer'); }, 1000)); }; fire(); runCountdown('timer', 5, 'カウントダウン'); }
+    $('metro-start').onclick = startMetro; $('metro-stop').onclick = () => stop(); $('metro-reset').onclick = () => reset('metro');
+    $('timer-start').onclick = startTimer; $('timer-stop').onclick = () => stop(); $('timer-reset').onclick = () => reset('timer');
+    $('bpm').oninput = updateCalc; $('chars').oninput = updateCalc; document.querySelectorAll('input[name="pace"]').forEach(x => x.onchange = updateCalc); updateCalc();
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && active) keepAwake(); });
+  </script>
+</body>
+</html>
