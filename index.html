@@ -1,124 +1,37 @@
 <!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f7f4ed">
-  <title>硬筆書写 速書きトレーニング</title>
-  <style>
-    :root { color-scheme: light; --ink:#17211d; --paper:#f7f4ed; --accent:#0b6b47; --soft:#e7efe9; --line:#cbd7cf; --danger:#9d302c; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100svh; background:var(--paper); color:var(--ink); font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif; }
-    main { width:min(100%, 620px); margin:auto; padding:max(24px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom)); }
-    h1 { margin:10px 0 6px; font-size:clamp(1.5rem, 6vw, 2rem); letter-spacing:.05em; }
-    h2 { margin:0; font-size:1.3rem; }
-    p { line-height:1.65; }
-    .sub, .hint { color:#53645a; font-size:.92rem; }
-    .screen[hidden] { display:none; }
-    .choices { display:grid; gap:14px; margin-top:28px; }
-    button { appearance:none; border:0; border-radius:14px; padding:14px 18px; background:var(--ink); color:white; font:inherit; font-weight:700; cursor:pointer; min-height:52px; }
-    button:focus-visible, input:focus-visible { outline:3px solid #d79020; outline-offset:3px; }
-    button.secondary { background:var(--soft); color:var(--ink); }
-    button.stop { background:var(--danger); }
-    .mode-button { text-align:left; padding:20px; font-size:1.1rem; }
-    .mode-button small { display:block; margin-top:5px; font-size:.83rem; opacity:.76; font-weight:400; }
-    .topline { display:flex; gap:10px; align-items:center; }
-    .home { min-height:40px; padding:8px 12px; border-radius:10px; background:transparent; color:var(--accent); }
-    .panel { margin-top:22px; padding:20px; border:1px solid var(--line); border-radius:16px; background:#fffdf8; }
-    fieldset { border:0; padding:0; margin:0; }
-    legend { font-weight:700; margin-bottom:10px; }
-    label { display:block; font-weight:700; margin-top:14px; }
-    input[type="number"] { width:100%; margin-top:7px; padding:12px; border:1px solid var(--line); border-radius:10px; color:var(--ink); font:inherit; background:white; }
-    .radios { display:grid; gap:8px; }
-    .radios label, .check { margin:0; font-weight:400; display:flex; gap:9px; align-items:center; }
-    input[type="radio"], input[type="checkbox"] { width:20px; height:20px; accent-color:var(--accent); }
-    .calculation { margin:14px 0 0; padding:12px; border-radius:10px; background:var(--soft); font-weight:700; line-height:1.6; }
-    .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px; }
-    .actions .wide { grid-column:1 / -1; }
-    .status { text-align:center; min-height:1.6em; margin:28px 0 4px; color:var(--accent); font-weight:700; }
-    .timer { text-align:center; font:700 clamp(4.4rem, 22vw, 8.7rem)/1 ui-monospace,SFMono-Regular,Consolas,monospace; font-variant-numeric:tabular-nums; letter-spacing:-.07em; margin:12px 0 26px; }
-    .progress { height:10px; overflow:hidden; border-radius:999px; background:var(--soft); }
-    .progress > div { height:100%; width:0; background:var(--accent); transition:width .15s linear; }
-    .active-note { text-align:center; color:#53645a; min-height:1.5em; }
-    @media (max-width:380px) { main { padding-left:14px; padding-right:14px; } .panel { padding:16px; } }
-  </style>
-</head>
-<body>
-  <main>
-    <section id="home-screen" class="screen">
-      <h1>硬筆書写 速書き</h1>
-      <p class="sub">音の合図で、4分間の速書きに必要なペースと体力を鍛えます。</p>
-      <div class="choices">
-        <button class="mode-button" type="button" data-open="metro-screen">メトロノームモード<small>一定の間隔で文字を書く練習</small></button>
-        <button class="mode-button" type="button" data-open="timer-screen">4分タイマーモード<small>本番を想定した4分間の練習</small></button>
-      </div>
-      <p class="hint">開始中は、対応するiPhoneのブラウザで画面スリープを防止します。</p>
-    </section>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>硬筆書写 速書き</title>
+<style>
+:root{--ink:#183127;--paper:#f8f5ed;--accent:#08734b;--soft:#e3efe8;--line:#c7d8cd;--danger:#a52f2a}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}main{max-width:650px;margin:auto;padding:max(24px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inset-bottom))}.screen[hidden]{display:none}h1{margin:.5rem 0;font-size:2rem}h2{margin:0}.sub,.note{color:#52675b;line-height:1.6}.menu{display:grid;gap:12px;margin-top:25px}.panel{margin-top:20px;padding:18px;border:1px solid var(--line);border-radius:16px;background:#fffdf8}.row{display:flex;gap:10px;align-items:center}.home{background:transparent;color:var(--accent);padding:8px 0;min-height:auto}button{border:0;border-radius:13px;padding:15px 16px;background:var(--ink);color:#fff;font:inherit;font-weight:700;cursor:pointer;min-height:50px}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible{outline:3px solid #d78b16;outline-offset:3px}.menu button{text-align:left;font-size:1.05rem;padding:19px}.menu small{display:block;margin-top:5px;font-weight:400;opacity:.78}.secondary{background:var(--soft);color:var(--ink)}.stop{background:var(--danger)}label{display:block;margin-top:14px;font-weight:700}input[type=number]{display:block;width:100%;margin-top:6px;border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;background:#fff}.choice{display:flex;align-items:center;gap:8px;font-weight:400;margin:10px 0}.choice input{width:20px;height:20px;accent-color:var(--accent)}.calc{background:var(--soft);border-radius:10px;padding:10px;font-weight:700;line-height:1.55}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.wide{grid-column:1/-1}.status{text-align:center;color:var(--accent);font-weight:700;min-height:1.6em;margin:25px 0 5px}.display{text-align:center;font:700 clamp(4.2rem,23vw,8rem)/1 ui-monospace,Consolas,monospace;letter-spacing:-.07em;font-variant-numeric:tabular-nums;margin:10px 0 22px}.kana{font:700 clamp(6rem,36vw,13rem)/1 "Hiragino Kaku Gothic ProN",sans-serif;letter-spacing:0}.bar{height:10px;background:var(--soft);border-radius:99px;overflow:hidden}.bar div{height:100%;width:0;background:var(--accent)}.center{text-align:center}
+</style></head><body><main>
+<section id="home" class="screen"><h1>硬筆書写 速書き</h1><p class="sub">ペース、かな、時間配分を目的別に練習できます。</p><div class="menu">
+<button data-page="metro">4分メトロノーム<small>BPM または4分の目標文字数で一定ペース</small></button>
+<button data-page="kana">かなトレモード<small>あ〜んを表示・発声しながら4分間</small></button>
+<button data-page="free">フリーモード<small>BPMで止めるまでメトロノームを継続</small></button>
+<button data-page="freeKana">フリーかなモード<small>あ〜んをBPMで無限ループ</small></button>
+<button data-page="timer">タイマーモード<small>時間とBPMだけで行うインターバル練習</small></button>
+<button data-page="exam">4分タイマーモード<small>黙読1分を加えられる本番形式</small></button>
+</div><p class="note">開始中は対応するiPhoneブラウザの画面スリープを防止します。</p></section>
 
-    <section id="metro-screen" class="screen" hidden>
-      <div class="topline"><button class="home" type="button" data-home>← ホーム</button><h2>メトロノーム</h2></div>
-      <div class="panel">
-        <fieldset>
-          <legend>文字の合図間隔</legend>
-          <div class="radios">
-            <label><input type="radio" name="pace" value="bpm" checked> BPMで設定する</label>
-            <label><input type="radio" name="pace" value="chars"> 4分間の文字数で設定する</label>
-          </div>
-        </fieldset>
-        <label for="bpm">BPM（1分あたりの合図）</label>
-        <input id="bpm" type="number" inputmode="numeric" min="20" max="240" value="60">
-        <label for="chars">4分間の目標文字数</label>
-        <input id="chars" type="number" inputmode="numeric" min="1" max="1440" value="120">
-        <p id="metro-calc" class="calculation" aria-live="polite"></p>
-        <div class="actions"><button id="metro-start" class="wide" type="button">開始</button><button id="metro-stop" class="stop" type="button" disabled>ストップ</button><button id="metro-reset" class="secondary" type="button">リセット</button></div>
-      </div>
-      <p id="metro-status" class="status" aria-live="polite">準備完了</p>
-      <div id="metro-time" class="timer">04:00</div>
-      <div class="progress" aria-label="4分間の進行状況"><div id="metro-progress"></div></div>
-      <p class="active-note">1音につき1文字を書く目安です</p>
-    </section>
+<section id="pace" class="screen" hidden><div class="row"><button class="home" data-home>← ホーム</button><h2 id="pace-title"></h2></div><div class="panel"><label class="choice"><input type="radio" name="basis" value="bpm" checked>BPMで設定する</label><label class="choice"><input type="radio" name="basis" value="chars">4分間の目標文字数で設定する</label><label for="bpm">BPM（1分あたりの合図）</label><input id="bpm" type="number" min="20" max="300" value="60" inputmode="numeric"><label for="chars">4分間の目標文字数</label><input id="chars" type="number" min="1" max="1440" value="120" inputmode="numeric"><p id="calc" class="calc"></p><div class="actions"><button id="pace-start" class="wide">開始</button><button id="pace-stop" class="stop" disabled>ストップ</button><button id="pace-reset" class="secondary">リセット</button></div></div><p id="pace-status" class="status">準備完了</p><div id="pace-display" class="display">04:00</div><div class="bar"><div id="pace-bar"></div></div><p id="pace-note" class="center note"></p></section>
 
-    <section id="timer-screen" class="screen" hidden>
-      <div class="topline"><button class="home" type="button" data-home>← ホーム</button><h2>4分タイマー</h2></div>
-      <div class="panel">
-        <label class="check" for="reading"><input id="reading" type="checkbox">開始前に黙読1分を入れる</label>
-        <p class="hint">黙読後、5秒のカウントダウン（ピッ×4、ピー）から4分を開始します。</p>
-        <div class="actions"><button id="timer-start" class="wide" type="button">開始</button><button id="timer-stop" class="stop" type="button" disabled>ストップ</button><button id="timer-reset" class="secondary" type="button">リセット</button></div>
-      </div>
-      <p id="timer-status" class="status" aria-live="polite">準備完了</p>
-      <div id="timer-time" class="timer">04:00</div>
-      <div class="progress" aria-label="4分間の進行状況"><div id="timer-progress"></div></div>
-      <p id="timer-note" class="active-note">4分間、集中して書き切りましょう</p>
-    </section>
-  </main>
-  <script>
-    const DURATION = 240;
-    let audioContext, wakeLock, active = null, rafId = 0, intervalId = 0, timeoutIds = [];
-    const $ = id => document.getElementById(id);
-    const screens = ['home-screen', 'metro-screen', 'timer-screen'];
-    const setScreen = id => screens.forEach(s => $(s).hidden = s !== id);
-    document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => setScreen(b.dataset.open));
-    document.querySelectorAll('[data-home]').forEach(b => b.onclick = () => { stop(); setScreen('home-screen'); });
+<section id="freePage" class="screen" hidden><div class="row"><button class="home" data-home>← ホーム</button><h2 id="free-title"></h2></div><div class="panel"><label for="free-bpm">BPM（1分あたりの合図）</label><input id="free-bpm" type="number" min="20" max="300" value="60" inputmode="numeric"><p id="free-calc" class="calc"></p><div class="actions"><button id="free-start" class="wide">開始</button><button id="free-stop" class="stop" disabled>ストップ</button><button id="free-reset" class="secondary">リセット</button></div></div><p id="free-status" class="status">準備完了</p><div id="free-display" class="display">--:--</div><p id="free-note" class="center note"></p></section>
 
-    function context() { if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); audioContext.resume(); return audioContext; }
-    function beep(long = false) { const ctx = context(), osc = ctx.createOscillator(), gain = ctx.createGain(), now = ctx.currentTime; osc.frequency.value = long ? 1047 : 880; gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(.16, now + .01); gain.gain.exponentialRampToValueAtTime(.0001, now + (long ? .45 : .12)); osc.connect(gain).connect(ctx.destination); osc.start(now); osc.stop(now + (long ? .47 : .14)); }
-    async function keepAwake() { if (!('wakeLock' in navigator) || wakeLock) return; try { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => wakeLock = null); } catch (_) {} }
-    async function releaseAwake() { if (wakeLock) { try { await wakeLock.release(); } catch (_) {} wakeLock = null; } }
-    function clearSchedules() { cancelAnimationFrame(rafId); clearInterval(intervalId); timeoutIds.forEach(clearTimeout); timeoutIds = []; }
-    function setTime(id, sec) { sec = Math.max(0, Math.ceil(sec)); $(id).textContent = `${String(Math.floor(sec / 60)).padStart(2,'0')}:${String(sec % 60).padStart(2,'0')}`; }
-    function buttons(mode, running) { $(`${mode}-start`).disabled = running; $(`${mode}-stop`).disabled = !running; }
-    function stop(message = '中断しました') { if (!active) return; clearSchedules(); buttons(active, false); $(`${active}-status`).textContent = message; active = null; releaseAwake(); }
-    function reset(mode) { stop(); setTime(`${mode}-time`, DURATION); $(`${mode}-progress`).style.width = '0%'; $(`${mode}-status`).textContent = '準備完了'; if (mode === 'timer') $('timer-note').textContent = '4分間、集中して書き切りましょう'; }
-    function runCountdown(mode, seconds, title, onFinish) { const started = performance.now(); $(`${mode}-status`).textContent = title; const draw = now => { if (active !== mode) return; const left = seconds - (now - started) / 1000; setTime(`${mode}-time`, left); if (left <= 0) return onFinish(); rafId = requestAnimationFrame(draw); }; rafId = requestAnimationFrame(draw); }
-    function runFourMinutes(mode, onTick) { const started = performance.now(); $(`${mode}-status`).textContent = '書写中'; const draw = now => { if (active !== mode) return; const elapsed = Math.min(DURATION, (now - started) / 1000); setTime(`${mode}-time`, DURATION - elapsed); $(`${mode}-progress`).style.width = `${elapsed / DURATION * 100}%`; if (onTick) onTick(elapsed); if (elapsed >= DURATION) { clearInterval(intervalId); buttons(mode, false); $(`${mode}-status`).textContent = '終了！ おつかれさまでした'; active = null; beep(true); releaseAwake(); return; } rafId = requestAnimationFrame(draw); }; rafId = requestAnimationFrame(draw); }
-    function updateCalc() { const byBpm = document.querySelector('input[name="pace"]:checked').value === 'bpm'; const bpm = Math.min(240, Math.max(20, Number($('bpm').value) || 60)); const chars = Math.min(1440, Math.max(1, Number($('chars').value) || 120)); const interval = byBpm ? 60 / bpm : DURATION / chars; $('metro-calc').textContent = byBpm ? `1文字 ${interval.toFixed(2)}秒ごと ／ 4分で約${Math.round(DURATION / interval)}文字` : `1文字 ${interval.toFixed(2)}秒ごと ／ 1分あたり${(60 / interval).toFixed(1)}文字`; return interval; }
-    function startMetro() { const interval = updateCalc(); active = 'metro'; buttons('metro', true); keepAwake(); beep(); let next = interval * 1000; const started = performance.now(); intervalId = setInterval(() => { const elapsed = performance.now() - started; if (elapsed + 60 >= next) { beep(); next += interval * 1000; } }, Math.min(100, interval * 1000 / 4)); runFourMinutes('metro'); }
-    function startTimer() { active = 'timer'; buttons('timer', true); keepAwake(); if (!$('reading').checked) { $('timer-note').textContent = '4分間、集中して書き切りましょう'; return runFourMinutes('timer'); } $('timer-note').textContent = '黙読中'; runCountdown('timer', 60, '黙読 1分', beginFive); }
-    function beginFive() { if (active !== 'timer') return; $('timer-note').textContent = 'まもなく開始'; let n = 0; const fire = () => { n++; beep(n === 5); if (n < 5) timeoutIds.push(setTimeout(fire, 1000)); else timeoutIds.push(setTimeout(() => { $('timer-note').textContent = '4分間、集中して書き切りましょう'; runFourMinutes('timer'); }, 1000)); }; fire(); runCountdown('timer', 5, 'カウントダウン'); }
-    $('metro-start').onclick = startMetro; $('metro-stop').onclick = () => stop(); $('metro-reset').onclick = () => reset('metro');
-    $('timer-start').onclick = startTimer; $('timer-stop').onclick = () => stop(); $('timer-reset').onclick = () => reset('timer');
-    $('bpm').oninput = updateCalc; $('chars').oninput = updateCalc; document.querySelectorAll('input[name="pace"]').forEach(x => x.onchange = updateCalc); updateCalc();
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && active) keepAwake(); });
-  </script>
-</body>
-</html>
+<section id="timerPage" class="screen" hidden><div class="row"><button class="home" data-home>← ホーム</button><h2>タイマーモード</h2></div><div class="panel"><label for="duration">タイマー時間（秒）</label><input id="duration" type="number" min="5" max="3600" value="60" inputmode="numeric"><label for="timer-bpm">BPM</label><input id="timer-bpm" type="number" min="20" max="300" value="120" inputmode="numeric"><div class="actions"><button id="timer-start" class="wide">開始</button><button id="timer-stop" class="stop" disabled>ストップ</button><button id="timer-reset" class="secondary">リセット</button></div></div><p id="timer-status" class="status">準備完了</p><div id="timer-display" class="display">01:00</div><div class="bar"><div id="timer-bar"></div></div></section>
+
+<section id="examPage" class="screen" hidden><div class="row"><button class="home" data-home>← ホーム</button><h2>4分タイマー</h2></div><div class="panel"><label class="choice"><input id="reading" type="checkbox">開始前に黙読1分を入れる</label><p class="note">黙読後、5秒のカウントダウン（ピッ×4、ピー）から4分を始めます。</p><div class="actions"><button id="exam-start" class="wide">開始</button><button id="exam-stop" class="stop" disabled>ストップ</button><button id="exam-reset" class="secondary">リセット</button></div></div><p id="exam-status" class="status">準備完了</p><div id="exam-display" class="display">04:00</div><div class="bar"><div id="exam-bar"></div></div></section>
+</main><script>
+const KANA=['あ','い','う','え','お','か','き','く','け','こ','さ','し','す','せ','そ','た','ち','つ','て','と','な','に','ぬ','ね','の','は','ひ','ふ','へ','ほ','ま','み','む','め','も','や','ゆ','よ','ら','り','る','れ','ろ','わ','を','ん'];
+let ctx,wake,run=null,raf=0,beatTimer=0,timers=[],kanaIndex=0,paceKana=false,freeKana=false;const $=id=>document.getElementById(id);const pages=['home','pace','freePage','timerPage','examPage'];
+function show(id){pages.forEach(x=>$(x).hidden=x!==id)}document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>open(b.dataset.page));document.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>{stop();show('home')});
+function open(page){stop();if(page==='metro'||page==='kana'){paceKana=page==='kana';$('pace-title').textContent=paceKana?'かなトレモード':'4分メトロノーム';$('pace-note').textContent=paceKana?'合図ごとに、かなを1文字書きます。':'1音につき1文字を書く目安です。';reset('pace');show('pace')}else if(page==='free'||page==='freeKana'){freeKana=page==='freeKana';$('free-title').textContent=freeKana?'フリーかなモード':'フリーモード';$('free-note').textContent=freeKana?'あ〜んを繰り返します。':'止めるまで一定のBPMで続きます。';reset('free');show('freePage')}else{reset(page==='timer'?'timer':'exam');show(page==='timer'?'timerPage':'examPage')}}
+function audio(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();ctx.resume();return ctx}function beep(last=false){const c=audio(),o=c.createOscillator(),g=c.createGain(),n=c.currentTime;o.frequency.value=last?1047:880;g.gain.setValueAtTime(.001,n);g.gain.exponentialRampToValueAtTime(.13,n+.01);g.gain.exponentialRampToValueAtTime(.001,n+(last?.42:.1));o.connect(g).connect(c.destination);o.start();o.stop(n+(last?.45:.13))}function speak(k){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(k);u.lang='ja-JP';u.rate=1.15;speechSynthesis.speak(u)}
+async function awake(){if(!('wakeLock'in navigator)||wake)return;try{wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',()=>wake=null)}catch(_){}}async function sleep(){if(wake){try{await wake.release()}catch(_){}wake=null}}
+function clear(){cancelAnimationFrame(raf);clearInterval(beatTimer);timers.forEach(clearTimeout);timers=[];if('speechSynthesis'in window)speechSynthesis.cancel()}function btn(prefix,on){$(`${prefix}-start`).disabled=on;$(`${prefix}-stop`).disabled=!on}function time(sec){sec=Math.max(0,Math.ceil(sec));return`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`}function stop(msg='中断しました'){if(!run)return;clear();btn(run,false);$(`${run}-status`).textContent=msg;run=null;sleep()}
+function reset(which){stop();if(which==='pace'){$('pace-display').textContent='04:00';$('pace-bar').style.width='0%';$('pace-status').textContent='準備完了'}if(which==='free'){$('free-display').textContent='--:--';$('free-status').textContent='準備完了'}if(which==='timer'){$('timer-display').textContent=time(+$('duration').value||60);$('timer-bar').style.width='0%';$('timer-status').textContent='準備完了'}if(which==='exam'){$('exam-display').textContent='04:00';$('exam-bar').style.width='0%';$('exam-status').textContent='準備完了'}}
+function interval(){const by=document.querySelector('input[name=basis]:checked').value==='bpm',b=Math.max(20,Math.min(300,+$('bpm').value||60)),n=Math.max(1,Math.min(1440,+$('chars').value||120)),s=by?60/b:240/n;$('calc').textContent=by?`1文字 ${s.toFixed(2)}秒ごと ／ 4分で約${Math.round(240/s)}文字`:`1文字 ${s.toFixed(2)}秒ごと ／ 1分あたり${(60/s).toFixed(1)}文字`;return s}function freeInterval(){const b=Math.max(20,Math.min(300,+$('free-bpm').value||60)),s=60/b;$('free-calc').textContent=`1文字 ${s.toFixed(2)}秒ごと`;return s}
+function kanaBeat(target){const k=KANA[kanaIndex++%KANA.length];$(target).textContent=k;speak(k);beep()}
+function finite(prefix,seconds,beat,beatFn){const start=performance.now();$(prefix+'-status').textContent='実行中';function draw(n){if(run!==prefix)return;const e=Math.min(seconds,(n-start)/1000);$(prefix+'-display').textContent=time(seconds-e);$(prefix+'-bar').style.width=`${e/seconds*100}%`;if(e>=seconds){clearInterval(beatTimer);btn(prefix,false);$(prefix+'-status').textContent='終了！';beep(true);run=null;sleep();return}raf=requestAnimationFrame(draw)}if(beat){beatFn();let next=beat*1000;beatTimer=setInterval(()=>{const e=performance.now()-start;if(e+50>=next){beatFn();next+=beat*1000}},Math.min(80,beat*250))}raf=requestAnimationFrame(draw)}
+function startPace(){const s=interval();run='pace';kanaIndex=0;btn('pace',true);awake();finite('pace',240,s,()=>paceKana?kanaBeat('pace-display'):beep())}function startFree(){const s=freeInterval();run='free';kanaIndex=0;btn('free',true);awake();$('free-status').textContent='実行中';const tick=()=>freeKana?kanaBeat('free-display'):beep();tick();beatTimer=setInterval(tick,s*1000)}function startTimer(){const d=Math.max(5,Math.min(3600,+$('duration').value||60)),s=60/Math.max(20,Math.min(300,+$('timer-bpm').value||120));run='timer';btn('timer',true);awake();finite('timer',d,s,()=>beep())}
+function countdown(sec,title,done){const start=performance.now();$('exam-status').textContent=title;function draw(n){if(run!=='exam')return;const left=sec-(n-start)/1000;$('exam-display').textContent=time(left);if(left<=0)return done();raf=requestAnimationFrame(draw)}raf=requestAnimationFrame(draw)}function startExam(){run='exam';btn('exam',true);awake();if(!$('reading').checked)return finite('exam',240,0,null);countdown(60,'黙読 1分',()=>{let i=0;const f=()=>{i++;beep(i===5);if(i<5)timers.push(setTimeout(f,1000));else timers.push(setTimeout(()=>finite('exam',240,0,null),1000))};f();countdown(5,'カウントダウン',()=>{})})}
+$('pace-start').onclick=startPace;$('pace-stop').onclick=()=>stop();$('pace-reset').onclick=()=>reset('pace');$('free-start').onclick=startFree;$('free-stop').onclick=()=>stop();$('free-reset').onclick=()=>reset('free');$('timer-start').onclick=startTimer;$('timer-stop').onclick=()=>stop();$('timer-reset').onclick=()=>reset('timer');$('exam-start').onclick=startExam;$('exam-stop').onclick=()=>stop();$('exam-reset').onclick=()=>reset('exam');$('bpm').oninput=interval;$('chars').oninput=interval;document.querySelectorAll('input[name=basis]').forEach(x=>x.onchange=interval);$('free-bpm').oninput=freeInterval;$('duration').oninput=()=>reset('timer');interval();freeInterval();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&run)awake()});
+</script></body></html>
